@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package hermetic_fhe;
+
+// Service definition for FHE operations
+service FheService {
+  // Key generation
+  rpc GenerateKeys(KeyGenerationRequest) returns (KeyGenerationResponse);
+  
+  // Encryption operations
+  rpc EncryptBoolean(EncryptBooleanRequest) returns (EncryptedDataResponse);
+  rpc EncryptInteger(EncryptIntegerRequest) returns (EncryptedDataResponse);
+  
+  // FHE operations
+  rpc EvaluateOperation(EvaluationRequest) returns (EvaluationResponse);
+  
+  // Decryption operations
+  rpc DecryptBoolean(DecryptBooleanRequest) returns (BooleanResponse);
+  rpc DecryptInteger(DecryptIntegerRequest) returns (IntegerResponse);
+}
+
+// Request for key generation
+message KeyGenerationRequest {
+  enum ParameterSet {
+    DEFAULT = 0;
+    FAST = 1;
+    SECURE = 2;
+  }
+  ParameterSet parameter_set = 1;
+}
+
+// Response for key generation
+message KeyGenerationResponse {
+  string client_key_id = 1;
+  string server_key_id = 2;
+}
+
+// Request to encrypt a boolean value
+message EncryptBooleanRequest {
+  string client_key_id = 1;
+  bool value = 2;
+}
+
+// Request to encrypt an integer value
+message EncryptIntegerRequest {
+  string client_key_id = 1;
+  int64 value = 2;
+  uint32 num_bits = 3; // Number of bits for integer representation
+}
+
+// Response containing encrypted data
+message EncryptedDataResponse {
+  string encrypted_data_id = 1;
+  bytes serialized_data = 2; // Optional serialized ciphertext
+}
+
+// Different operation types for FHE evaluation
+enum OperationType {
+  AND = 0;
+  OR = 1;
+  XOR = 2;
+  NOT = 3;
+  ADD = 4;
+  SUBTRACT = 5;
+  MULTIPLY = 6;
+  GREATER_THAN = 7;
+  LESS_THAN = 8;
+  EQUAL = 9;
+}
+
+// Request for operation evaluation
+message EvaluationRequest {
+  string server_key_id = 1;
+  OperationType operation = 2;
+  repeated string operand_ids = 3; // IDs of encrypted values to operate on
+}
+
+// Response for operation evaluation
+message EvaluationResponse {
+  string result_id = 1;
+  bytes serialized_result = 2; // Optional serialized result
+}
+
+// Request to decrypt a boolean value
+message DecryptBooleanRequest {
+  string client_key_id = 1;
+  string encrypted_data_id = 2;
+  bytes serialized_data = 3; // Optional serialized ciphertext
+}
+
+// Response containing decrypted boolean value
+message BooleanResponse {
+  bool value = 1;
+}
+
+// Request to decrypt an integer value
+message DecryptIntegerRequest {
+  string client_key_id = 1;
+  string encrypted_data_id = 2;
+  bytes serialized_data = 3; // Optional serialized ciphertext
+}
+
+// Response containing decrypted integer value
+message IntegerResponse {
+  int64 value = 1;
+} 
