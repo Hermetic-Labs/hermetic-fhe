@@ -20,10 +20,6 @@ target/
 
 /target
 
-# Rust
-**/*.rs.bk
-*.pdb
-
 # Tonic generated code
 src/api/hermetic_fhe.rs
 

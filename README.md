@@ -144,7 +144,7 @@ Decrypt the results using the client key.
 
 ## License
 
-MIT
+AGPL v3
 
 ## Contributing
 
